@@ -18,14 +18,16 @@ export default function App() {
         cancelUrl: window.location.origin + "/cancel",
       };
       const res = await createOrder(payload);
-      if (res && res.data && res.data.checkoutUrl) {
+      if (res && res.error === 0 && res.data && res.data.checkoutUrl) {
         setMessage("Redirecting to payment...");
         window.location.href = res.data.checkoutUrl;
       } else {
-        setMessage(JSON.stringify(res));
+        // In chi tiết lỗi ra màn hình
+        const errorReason = res?.message || res?.desc || JSON.stringify(res);
+        setMessage(`Tạo link thanh toán thất bại: ${errorReason}`);
       }
     } catch (err) {
-      setMessage("Error: " + err.message);
+      setMessage(`Lỗi hệ thống: ${err.message || err.toString()}`);
     }
   };
 
